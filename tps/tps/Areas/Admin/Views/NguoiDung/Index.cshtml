@@ -1,0 +1,42 @@
+﻿@model List<tps.Models.Entities.TaiKhoan>
+@{
+    ViewData["Title"] = "Quản lý người dùng";
+}
+
+<h2 class="mb-3">Quản lý người dùng</h2>
+@if (TempData["ThanhCong"] != null)
+{
+    <div class="alert alert-success">@TempData["ThanhCong"]</div>
+}
+@if (TempData["Loi"] != null)
+{
+    <div class="alert alert-danger">@TempData["Loi"]</div>
+}
+
+<form method="get" class="d-flex gap-2 mb-3">
+    <input name="tuKhoa" value="@ViewBag.TuKhoa" class="form-control" placeholder="Tìm theo tên, email, số điện thoại..." />
+    <button class="btn btn-primary">Tìm</button>
+</form>
+
+<table class="table table-bordered align-middle">
+    <thead class="table-light"><tr><th>Họ tên</th><th>Email</th><th>SĐT</th><th>Vai trò</th><th></th></tr></thead>
+    <tbody>
+        @foreach (var t in Model)
+        {
+            <tr>
+                <td>@t.HoTen</td>
+                <td>@t.Email</td>
+                <td>@t.SoDienThoai</td>
+                <td>@string.Join(", ", t.VaiTros.Select(v => v.Ten))</td>
+                <td>
+                    @if (!t.VaiTros.Any(v => v.Ten == "Admin"))
+                    {
+                        <form asp-action="Xoa" asp-route-id="@t.Id" method="post" onsubmit="return confirm('Xóa tài khoản này?');">
+                            <button class="btn btn-sm btn-outline-danger">Xóa</button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

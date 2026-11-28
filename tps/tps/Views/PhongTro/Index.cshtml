@@ -1,0 +1,91 @@
+﻿@model IEnumerable<tps.Models.Entities.PhongTro>
+@{
+    ViewData["Title"] = "Phòng trọ của tôi";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Phòng trọ của tôi</h2>
+    <a asp-action="Create" class="btn btn-primary">+ Thêm phòng</a>
+</div>
+
+@if (TempData["ThanhCong"] != null)
+{
+    <div class="alert alert-success">@TempData["ThanhCong"]</div>
+}
+@if (TempData["Loi"] != null)
+{
+    <div class="alert alert-danger">@TempData["Loi"]</div>
+}
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Bạn chưa đăng phòng nào.</div>
+}
+else
+{
+    <table class="table table-bordered align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>Ảnh</th>
+                <th>Tên nhà trọ</th>
+                <th>Địa chỉ</th>
+                <th>Diện tích</th>
+                <th>Giá thuê</th>
+                <th>Trạng thái</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var p in Model)
+            {
+                <tr>
+                    <td style="width:110px">
+                        @if (!string.IsNullOrEmpty(p.HinhAnh))
+                        {
+                            <img src="@p.HinhAnh" style="max-width:100px;max-height:70px" alt="" />
+                        }
+                    </td>
+                    <td>@p.TenNhaTro</td>
+                    <td>@p.DiaChi</td>
+                    <td>@p.DienTich m²</td>
+                    <td>@p.GiaThue.ToString("N0") đ</td>
+                    <td>
+                        @if (p.ConPhong)
+                        {
+                            <span class="badge bg-success">Còn phòng</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Hết phòng</span>
+                        }
+                        @if (p.TimOGhep)
+                        {
+                            <span class="badge bg-info text-dark">Tìm ở ghép</span>
+                        }
+                    </td>
+                    <td class="text-nowrap">
+                        <form asp-action="DoiTrangThai" asp-route-id="@p.Id" method="post" class="d-inline">
+                            @if (p.ConPhong)
+                            {
+                                <button type="submit" class="btn btn-sm btn-outline-secondary" title="Đánh dấu đã hết phòng">
+                                    <i class="bi bi-door-closed"></i> Đánh dấu hết phòng
+                                </button>
+                            }
+                            else
+                            {
+                                <button type="submit" class="btn btn-sm btn-outline-success" title="Mở lại, còn phòng">
+                                    <i class="bi bi-door-open"></i> Mở lại phòng
+                                </button>
+                            }
+                        </form>
+                        <a asp-action="Edit" asp-route-id="@p.Id" class="btn btn-sm btn-outline-primary">Sửa</a>
+                        <form asp-action="Delete" asp-route-id="@p.Id" method="post" class="d-inline"
+                              onsubmit="return confirm('Xóa phòng này?');">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Xóa</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

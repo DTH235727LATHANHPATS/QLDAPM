@@ -1,0 +1,53 @@
+﻿@model tps.Models.ViewModels.HoSoChuTroFormViewModel
+@{
+    ViewData["Title"] = "Hồ sơ chủ trọ";
+}
+
+<h2 class="mb-3">Hồ sơ chủ trọ</h2>
+
+@if (TempData["ThanhCong"] != null)
+{
+    <div class="alert alert-success">@TempData["ThanhCong"]</div>
+}
+
+<div class="row">
+    <div class="col-md-7">
+        <form asp-action="ChuTro" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="mb-3">
+                <label asp-for="HoTen" class="form-label"></label>
+                <input asp-for="HoTen" class="form-control" />
+                <span asp-validation-for="HoTen" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="SdtLienHe" class="form-label"></label>
+                <input asp-for="SdtLienHe" class="form-control" />
+                <span asp-validation-for="SdtLienHe" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="EmailLienHe" class="form-label"></label>
+                <input asp-for="EmailLienHe" class="form-control" />
+                <span asp-validation-for="EmailLienHe" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="DiaChi" class="form-label"></label>
+                <input asp-for="DiaChi" class="form-control" />
+                <span asp-validation-for="DiaChi" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">Lưu hồ sơ</button>
+        </form>
+    </div>
+
+    <div class="col-md-5">
+        <div class="card card-body bg-light">
+            <h5>Nhà trọ của tôi</h5>
+            <p class="text-muted">Quản lý danh sách phòng bạn đang đăng.</p>
+            <a asp-controller="PhongTro" asp-action="Index" class="btn btn-outline-primary">Xem phòng trọ của tôi</a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

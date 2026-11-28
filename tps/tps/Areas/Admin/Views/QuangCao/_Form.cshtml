@@ -1,0 +1,50 @@
+﻿@model tps.Models.ViewModels.QuangCaoFormViewModel
+
+<input type="hidden" asp-for="Id" />
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+<div class="mb-3">
+    <label asp-for="TieuDe" class="form-label"></label>
+    <input asp-for="TieuDe" class="form-control" />
+    <span asp-validation-for="TieuDe" class="text-danger"></span>
+</div>
+<div class="mb-3">
+    <label asp-for="NoiDung" class="form-label"></label>
+    <textarea asp-for="NoiDung" class="form-control" rows="3"></textarea>
+</div>
+<div class="mb-3">
+    <label asp-for="DuongDan" class="form-label"></label>
+    <input asp-for="DuongDan" class="form-control" placeholder="https://..." />
+</div>
+<div class="row">
+    <div class="col-md-4 mb-3">
+        <label asp-for="ViTri" class="form-label"></label>
+        <select asp-for="ViTri" class="form-select">
+            <option value="0">Banner trang chủ</option>
+            <option value="1">Cột bên</option>
+            <option value="2">Đầu trang tìm kiếm</option>
+        </select>
+    </div>
+    <div class="col-md-4 mb-3">
+        <label asp-for="NgayBatDau" class="form-label"></label>
+        <input asp-for="NgayBatDau" type="date" class="form-control" />
+    </div>
+    <div class="col-md-4 mb-3">
+        <label asp-for="NgayKetThuc" class="form-label"></label>
+        <input asp-for="NgayKetThuc" type="date" class="form-control" />
+        <span asp-validation-for="NgayKetThuc" class="text-danger"></span>
+    </div>
+</div>
+<div class="mb-3">
+    <label asp-for="AnhMoi" class="form-label"></label>
+    @if (!string.IsNullOrEmpty(Model.HinhAnhHienTai))
+    {
+        <div class="mb-2"><img src="@Model.HinhAnhHienTai" style="max-height:120px" class="img-thumbnail" alt="" /></div>
+    }
+    <input asp-for="AnhMoi" type="file" class="form-control" accept=".jpg,.jpeg,.png,.webp" />
+    <span asp-validation-for="AnhMoi" class="text-danger"></span>
+</div>
+<div class="form-check mb-3">
+    <input asp-for="HienThi" class="form-check-input" />
+    <label asp-for="HienThi" class="form-check-label"></label>
+</div>

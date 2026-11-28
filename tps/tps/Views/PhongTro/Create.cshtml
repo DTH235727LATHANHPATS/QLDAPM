@@ -1,0 +1,24 @@
+﻿@model tps.Models.ViewModels.PhongTroFormViewModel
+@{
+	ViewData["Title"] = "Thêm phòng trọ";
+}
+
+<h2 class="mb-3">Thêm phòng trọ</h2>
+<form asp-action="Create" method="post" enctype="multipart/form-data">
+	<partial name="_Form" model="Model" />
+	<button type="submit" class="btn btn-primary">Lưu</button>
+	<a asp-action="Index" class="btn btn-secondary">Hủy</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $.validator.methods.number = function (value, element) {
+            return this.optional(element) || /^-?\d+([.,]\d+)?$/.test(value);
+        };
+        $.validator.methods.range = function (value, element, param) {
+            var v = parseFloat(String(value).replace(',', '.'));
+            return this.optional(element) || (v >= param[0] && v <= param[1]);
+        };
+    </script>
+}

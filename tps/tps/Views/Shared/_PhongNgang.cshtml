@@ -1,0 +1,36 @@
+﻿@model tps.Models.Entities.PhongTro
+
+<div class="h-card">
+    <a class="h-thumb" asp-area="" asp-controller="TimKiem" asp-action="ChiTiet" asp-route-id="@Model.Id">
+        @if (!string.IsNullOrEmpty(Model.HinhAnh))
+        {
+            <img src="@Model.HinhAnh" alt="@Model.TenNhaTro" loading="lazy" />
+        }
+        else
+        {
+            <div class="h-noimg">Chưa có ảnh</div>
+        }
+        <span class="h-badge @(Model.ConPhong ? "" : "het")">@(Model.ConPhong ? "Cho thuê" : "Hết phòng")</span>
+    </a>
+    <div class="h-body">
+        <a class="h-title text-truncate" asp-area="" asp-controller="TimKiem" asp-action="ChiTiet" asp-route-id="@Model.Id" title="@Model.TenNhaTro">@Model.TenNhaTro</a>
+        <div class="h-addr text-truncate" title="@Model.DiaChi"><i class="bi bi-geo-alt-fill text-secondary"></i> @Model.DiaChi</div>
+        <div class="h-price">@Model.GiaThue.ToString("N0") đ/tháng</div>
+        <div class="h-meta">
+            <span><i class="bi bi-aspect-ratio"></i> @Model.DienTich m²</span>
+            <span><i class="bi bi-house-door"></i> @Model.LoaiPhong.Ten</span>
+            @if (Model.TimOGhep)
+            {
+                <span class="text-info"><i class="bi bi-people-fill"></i> Tìm ở ghép</span>
+            }
+        </div>
+        <div class="h-actions d-flex justify-content-end gap-2">
+            <form asp-area="" asp-controller="SoSanh" asp-action="Them" method="post" class="d-inline">
+                <input type="hidden" name="id" value="@Model.Id" />
+                <input type="hidden" name="quayLai" value="@(Context.Request.Path + Context.Request.QueryString)" />
+                <button type="submit" class="btn-detail" title="Thêm vào so sánh"><i class="bi bi-columns-gap"></i> So sánh</button>
+            </form>
+            <a class="btn-detail" asp-area="" asp-controller="TimKiem" asp-action="ChiTiet" asp-route-id="@Model.Id">Xem chi tiết <i class="bi bi-arrow-right"></i></a>
+        </div>
+    </div>
+</div>

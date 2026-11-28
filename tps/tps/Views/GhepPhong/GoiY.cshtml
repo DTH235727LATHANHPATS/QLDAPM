@@ -1,0 +1,52 @@
+﻿@model List<tps.Services.Interfaces.GoiYKetQua>
+@{
+    ViewData["Title"] = "Gợi ý bạn ở ghép";
+}
+
+<h2 class="mb-3">Gợi ý bạn ở ghép</h2>
+@if (TempData["Loi"] != null)
+{
+    <div class="alert alert-danger">@TempData["Loi"]</div>
+}
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Chưa có sinh viên nào đang tìm người ở ghép.</div>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-md-2 g-3">
+        @foreach (var g in Model)
+        {
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <h5 class="card-title mb-1">@g.HoTen</h5>
+                            <span class="badge @(g.Diem >= 70 ? "bg-success" : g.Diem >= 40 ? "bg-warning text-dark" : "bg-secondary")">
+                                Hợp @g.Diem%
+                            </span>
+                        </div>
+                        <p class="text-muted mb-1">
+                            @(g.HoSo.NganhHoc ?? "Chưa rõ ngành")
+                            @if (g.HoSo.NganSachTu.HasValue && g.HoSo.NganSachDen.HasValue)
+                            {
+                                <text> · Ngân sách @g.HoSo.NganSachTu.Value.ToString("N0") - @g.HoSo.NganSachDen.Value.ToString("N0") đ</text>
+                            }
+                        </p>
+                        @if (!string.IsNullOrWhiteSpace(g.HoSo.GioiThieu))
+                        {
+                            <p class="mb-2" style="white-space:pre-line">@g.HoSo.GioiThieu</p>
+                        }
+                        <div>
+                            @foreach (var s in g.HoSo.SoThiches)
+                            {
+                                <span class="badge bg-light text-dark border">@s.Ten</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

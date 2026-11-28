@@ -1,0 +1,121 @@
+﻿@model tps.Models.ViewModels.TrangChuViewModel
+@{
+    ViewData["Title"] = "Trang chủ";
+}
+
+@* ===== BANNER ===== *@
+<section class="banner">
+    <div class="container-xl banner-text">
+        <h1>Tìm phòng trọ lý tưởng</h1>
+        <h1>Cho cuộc sống sinh viên thêm trọn vẹn!</h1>
+    </div>
+</section>
+
+@* ===== TÌM KIẾM ===== *@
+<section class="search-bar">
+    <div class="container-xl">
+        <form asp-area="" asp-controller="TimKiem" asp-action="Index" method="get">
+            <div class="row g-2 align-items-center">
+                <div class="col-lg-9">
+                    <div class="row g-2">
+                        <div class="col-md-4">
+                            <input name="TuKhoa" class="form-control" placeholder="Nhập tên nhà trọ, tên đường..." />
+                        </div>
+                        <div class="col-md-3">
+                            <select name="KhuVuc" class="form-select">
+                                <option value="">Chọn khu vực</option>
+                                <option>Long Xuyên</option>
+                                <option>Châu Đốc</option>
+                                <option>Cần Thơ</option>
+                                <option>Quận 10</option>
+                                <option>Gò Vấp</option>
+                                <option>Bình Thạnh</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select name="LoaiPhongId" class="form-select">
+                                <option value="">Chọn loại phòng</option>
+                                @foreach (var l in Model.LoaiPhongs)
+                                {
+                                    <option value="@l.Id">@l.Ten</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <select name="GiaDen" class="form-select">
+                                <option value="">Mức giá</option>
+                                <option value="1500000">Dưới 1,5 triệu</option>
+                                <option value="2500000">Dưới 2,5 triệu</option>
+                                <option value="4000000">Dưới 4 triệu</option>
+                                <option value="6000000">Dưới 6 triệu</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 d-grid">
+                    <button class="btn btn-primary btn-search"><i class="bi bi-search"></i> Tìm kiếm</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+@* ===== NỘI DUNG: TIN MỚI + QUẢNG CÁO ===== *@
+<div class="container-xl py-4">
+    <div class="row g-4">
+
+        <div class="col-lg-9">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3 class="section-title mb-0">Tin đăng mới nhất</h3>
+                <a asp-area="" asp-controller="TimKiem" asp-action="Index">Xem thêm »</a>
+            </div>
+
+            @if (!Model.PhongMoi.Any())
+            {
+                <div class="alert alert-info">Chưa có phòng nào được đăng.</div>
+            }
+            else
+            {
+                <div class="row g-3">
+                    @foreach (var p in Model.PhongMoi)
+                    {
+                        <div class="col-md-6"><partial name="_PhongNgang" model="p" /></div>
+                    }
+                </div>
+            }
+        </div>
+
+        <aside class="col-lg-3">
+            <div class="ad-box">
+                <div class="ad-head"><i class="bi bi-megaphone-fill"></i> Quảng cáo</div>
+                @if (!Model.QuangCaos.Any())
+                {
+                    <div class="ad-empty">Chưa có quảng cáo.<br />Admin có thể thêm ở mục Quản trị.</div>
+                }
+            </div>
+
+            @{
+                int i = 0;
+            }
+            @foreach (var a in Model.QuangCaos)
+            {
+                var coLink = !string.IsNullOrWhiteSpace(a.DuongDan) && (a.DuongDan.StartsWith("http://") || a.DuongDan.StartsWith("https://"));
+                var style = string.IsNullOrEmpty(a.HinhAnh) ? "" : $"background-image:linear-gradient(rgba(0,0,0,.35),rgba(0,0,0,.35)),url('{a.HinhAnh}');color:#fff";
+                <div class="ad-box">
+                    <div class="ad-item c@(i % 3)" style="@style">
+                        <h6>@a.TieuDe</h6>
+                        @if (!string.IsNullOrWhiteSpace(a.NoiDung))
+                        {
+                            <p>@a.NoiDung</p>
+                        }
+                        @if (coLink)
+                        {
+                            <a class="ad-more" href="@a.DuongDan" target="_blank" rel="noopener noreferrer">Xem ngay »</a>
+                        }
+                    </div>
+                </div>
+                i++;
+            }
+        </aside>
+    </div>
+</div>

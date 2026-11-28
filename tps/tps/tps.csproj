@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<UserSecretsId>aspnet-tps-c6531aee-3362-4117-a49c-d784c4a6dc55</UserSecretsId>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.21" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.21" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.21">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.21" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.21" />
+	</ItemGroup>
+
+	<!-- Không theo dõi ảnh người dùng tải lên (tránh Hot Reload/watch khởi động lại app) -->
+	<ItemGroup>
+		<Watch Include="wwwroot\uploads\**" Exclude="wwwroot\uploads\**" />
+		<Content Remove="wwwroot\uploads\**" />
+		<None Remove="wwwroot\uploads\**" />
+	</ItemGroup>
+
+</Project>

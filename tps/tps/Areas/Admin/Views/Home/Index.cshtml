@@ -1,0 +1,36 @@
+﻿@{
+    ViewData["Title"] = "Quản trị";
+}
+
+<h2 class="mb-3">Bảng điều khiển quản trị</h2>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-3"><div class="card card-body text-center"><div class="text-muted">Sinh viên</div><h2>@ViewBag.SoSinhVien</h2></div></div>
+    <div class="col-md-3"><div class="card card-body text-center"><div class="text-muted">Chủ trọ</div><h2>@ViewBag.SoChuTro</h2></div></div>
+    <div class="col-md-3"><div class="card card-body text-center"><div class="text-muted">Tổng số phòng</div><h2>@ViewBag.SoPhong</h2></div></div>
+    <div class="col-md-3"><div class="card card-body text-center"><div class="text-muted">Phòng còn trống</div><h2>@ViewBag.SoPhongTrong</h2></div></div>
+    <div class="col-md-6"><div class="card card-body text-center"><div class="text-muted">Yêu cầu ở ghép</div><h2>@ViewBag.SoYeuCau</h2></div></div>
+    <div class="col-md-6"><div class="card card-body text-center"><div class="text-muted">Ghép thành công</div><h2 class="text-success">@ViewBag.SoGhepThanhCong</h2></div></div>
+</div>
+
+<div class="card card-body mb-4">
+    <h5>Số phòng theo loại</h5>
+    @{
+        var ds = (IEnumerable<dynamic>)ViewBag.TheoLoai;
+        int max = ds.Any() ? ds.Max(x => (int)x.SoLuong) : 1;
+    }
+    @foreach (var x in ds)
+    {
+        int pt = max == 0 ? 0 : (int)x.SoLuong * 100 / max;
+        <div class="mb-2">
+            <div class="d-flex justify-content-between"><span>@x.Ten</span><span>@x.SoLuong</span></div>
+            <div class="progress"><div class="progress-bar" style="width:@pt%"></div></div>
+        </div>
+    }
+</div>
+
+<div class="d-flex gap-2">
+    <a asp-area="Admin" asp-controller="NguoiDung" asp-action="Index" class="btn btn-outline-primary">Quản lý người dùng</a>
+    <a asp-area="Admin" asp-controller="PhongTro" asp-action="Index" class="btn btn-outline-primary">Quản lý tin phòng</a>
+    <a asp-area="Admin" asp-controller="QuangCao" asp-action="Index" class="btn btn-outline-primary">Quảng cáo</a>
+</div>

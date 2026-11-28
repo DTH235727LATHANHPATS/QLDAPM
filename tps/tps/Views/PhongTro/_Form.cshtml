@@ -1,0 +1,82 @@
+﻿@model tps.Models.ViewModels.PhongTroFormViewModel
+
+<input type="hidden" asp-for="Id" />
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label asp-for="TenNhaTro" class="form-label"></label>
+        <input asp-for="TenNhaTro" class="form-control" />
+        <span asp-validation-for="TenNhaTro" class="text-danger"></span>
+    </div>
+    <div class="col-md-6 mb-3">
+        <label asp-for="LoaiPhongId" class="form-label"></label>
+        <select asp-for="LoaiPhongId" asp-items="(SelectList)ViewBag.LoaiPhongs" class="form-select">
+            <option value="">-- Chọn loại phòng --</option>
+        </select>
+        <span asp-validation-for="LoaiPhongId" class="text-danger"></span>
+    </div>
+</div>
+
+<div class="mb-3">
+    <label asp-for="DiaChi" class="form-label"></label>
+    <input asp-for="DiaChi" class="form-control" />
+    <span asp-validation-for="DiaChi" class="text-danger"></span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="MoTa" class="form-label"></label>
+    <textarea asp-for="MoTa" class="form-control" rows="3"></textarea>
+</div>
+
+<div class="row">
+    <div class="col-md-4 mb-3">
+        <label asp-for="DienTich" class="form-label"></label>
+        <input asp-for="DienTich" class="form-control" />
+        <span asp-validation-for="DienTich" class="text-danger"></span>
+    </div>
+    <div class="col-md-4 mb-3">
+        <label asp-for="GiaThue" class="form-label"></label>
+        <input asp-for="GiaThue" class="form-control" />
+        <span asp-validation-for="GiaThue" class="text-danger"></span>
+    </div>
+    <div class="col-md-4 mb-3">
+        <label asp-for="TienCoc" class="form-label"></label>
+        <input asp-for="TienCoc" class="form-control" />
+        <span asp-validation-for="TienCoc" class="text-danger"></span>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label asp-for="GiaDien" class="form-label"></label>
+        <input asp-for="GiaDien" class="form-control" />
+        <span asp-validation-for="GiaDien" class="text-danger"></span>
+    </div>
+    <div class="col-md-6 mb-3">
+        <label asp-for="GiaNuoc" class="form-label"></label>
+        <input asp-for="GiaNuoc" class="form-control" />
+        <span asp-validation-for="GiaNuoc" class="text-danger"></span>
+    </div>
+</div>
+
+<div class="mb-3">
+    <label asp-for="AnhMoi" class="form-label"></label>
+    @if (!string.IsNullOrEmpty(Model.HinhAnhHienTai))
+    {
+        <div class="mb-2"><img src="@Model.HinhAnhHienTai" alt="Ảnh phòng" style="max-height:140px" class="img-thumbnail" /></div>
+        <input type="hidden" asp-for="HinhAnhHienTai" />
+    }
+    <input asp-for="AnhMoi" type="file" class="form-control" accept=".jpg,.jpeg,.png,.webp" />
+    <span asp-validation-for="AnhMoi" class="text-danger"></span>
+    <div class="form-text">Ảnh .jpg, .png, .webp, tối đa 2 MB. Bỏ trống nếu không đổi ảnh.</div>
+</div>
+
+<div class="form-check mb-2">
+    <input asp-for="ConPhong" class="form-check-input" />
+    <label asp-for="ConPhong" class="form-check-label"></label>
+</div>
+<div class="form-check mb-3">
+    <input asp-for="TimOGhep" class="form-check-input" />
+    <label asp-for="TimOGhep" class="form-check-label"></label>
+</div>

@@ -1,0 +1,62 @@
+﻿@model List<tps.Models.Entities.YeuCauOGhep>
+@{
+    ViewData["Title"] = "Yêu cầu ở ghép nhận được";
+}
+
+<h2 class="mb-3">Yêu cầu ở ghép nhận được</h2>
+@if (TempData["ThanhCong"] != null)
+{
+    <div class="alert alert-success">@TempData["ThanhCong"]</div>
+}
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Chưa có yêu cầu nào.</div>
+}
+else
+{
+    <table class="table table-bordered align-middle">
+        <thead class="table-light"><tr><th>Phòng</th><th>Sinh viên</th><th>Liên hệ</th><th>Lời nhắn</th><th>Trạng thái</th><th></th></tr></thead>
+        <tbody>
+            @foreach (var y in Model)
+            {
+                <tr>
+                    <td>@y.Phong.TenNhaTro</td>
+                    <td>@y.SinhVien.HoTen</td>
+                    <td>@y.SinhVien.SoDienThoai @y.SinhVien.Email</td>
+                    <td>@y.LoiNhan</td>
+                    <td>
+                        @switch (y.TrangThai)
+                        {
+                            case 0:
+                                <span class="badge bg-warning text-dark">Chờ duyệt</span>
+                                break;
+                            case 1:
+
+                                <span class="badge bg-success">Đã chấp nhận</span>
+                                break;
+                            case 2:
+
+                                <span class="badge bg-danger">Đã từ chối</span>
+                                break;
+                            default:
+
+                                <span class="badge bg-secondary">Đã hủy</span>
+                                break;
+                        }
+                    </td>
+                    <td class="text-nowrap">
+                        @if (y.TrangThai == 0)
+                        {
+                            <form asp-action="PhanHoi" method="post" class="d-inline">
+                                <input type="hidden" name="id" value="@y.Id" />
+                                <button name="chapNhan" value="true" class="btn btn-sm btn-success">Chấp nhận</button>
+                                <button name="chapNhan" value="false" class="btn btn-sm btn-outline-danger">Từ chối</button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

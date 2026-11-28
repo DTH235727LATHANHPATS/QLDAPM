@@ -1,0 +1,120 @@
+﻿@using tps.Models.Entities
+@model tps.Models.ViewModels.HoSoSinhVienFormViewModel
+@{
+    ViewData["Title"] = "Hồ sơ sinh viên";
+}
+
+<h2 class="mb-3">Hồ sơ sinh viên</h2>
+
+@if (TempData["ThanhCong"] != null)
+{
+    <div class="alert alert-success">@TempData["ThanhCong"]</div>
+}
+
+<form asp-action="SinhVien" method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="card card-body mb-3">
+        <h5>Thông tin cá nhân</h5>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label asp-for="HoTen" class="form-label"></label>
+                <input asp-for="HoTen" class="form-control" />
+                <span asp-validation-for="HoTen" class="text-danger"></span>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label asp-for="TruongId" class="form-label"></label>
+                <select asp-for="TruongId" asp-items="(SelectList)ViewBag.Truongs" class="form-select">
+                    <option value="">-- Chọn trường --</option>
+                </select>
+                <span asp-validation-for="TruongId" class="text-danger"></span>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label asp-for="MaSinhVien" class="form-label"></label>
+                <input asp-for="MaSinhVien" class="form-control" />
+            </div>
+            <div class="col-md-4 mb-3">
+                <label asp-for="GioiTinh" class="form-label"></label>
+                <select asp-for="GioiTinh" class="form-select">
+                    <option value="">-- Chọn --</option>
+                    <option value="0">Nữ</option>
+                    <option value="1">Nam</option>
+                    <option value="2">Khác</option>
+                </select>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label asp-for="NgaySinh" class="form-label"></label>
+                <input asp-for="NgaySinh" type="date" class="form-control" />
+            </div>
+            <div class="col-md-12 mb-3">
+                <label asp-for="NganhHoc" class="form-label"></label>
+                <input asp-for="NganhHoc" class="form-control" />
+            </div>
+            <div class="col-md-12 mb-3">
+                <label asp-for="GioiThieu" class="form-label"></label>
+                <textarea asp-for="GioiThieu" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="GioiThieu" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="card card-body mb-3">
+        <h5>Nhu cầu thuê phòng</h5>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label asp-for="NganSachTu" class="form-label"></label>
+                <input asp-for="NganSachTu" class="form-control" />
+                <span asp-validation-for="NganSachTu" class="text-danger"></span>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label asp-for="NganSachDen" class="form-label"></label>
+                <input asp-for="NganSachDen" class="form-control" />
+                <span asp-validation-for="NganSachDen" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-check">
+            <input asp-for="DangTimOGhep" class="form-check-input" />
+            <label asp-for="DangTimOGhep" class="form-check-label"></label>
+        </div>
+    </div>
+
+    <div class="card card-body mb-3">
+        <h5>Sở thích</h5>
+        <div>
+            @foreach (var s in (List<SoThich>)ViewBag.SoThiches)
+            {
+                <div class="form-check form-check-inline">
+                    <input type="checkbox" class="form-check-input" name="SoThichIds" value="@s.Id" id="st@(s.Id)"
+                           @(Model.SoThichIds.Contains(s.Id) ? "checked" : "") />
+                    <label class="form-check-label" for="st@(s.Id)">@s.Ten</label>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="card card-body mb-3">
+        <h5>Thói quen sinh hoạt</h5>
+        <div class="form-text mb-2">Thông tin này dùng để gợi ý người ở ghép hợp với bạn.</div>
+        @foreach (var nhom in (List<NhomThoiQuen>)ViewBag.Nhoms)
+        {
+            <div class="mb-2">
+                <div class="fw-semibold">@nhom.Ten</div>
+                @foreach (var o in nhom.LuaChons.OrderBy(x => x.GiaTri))
+                {
+                    var daChon = Model.ThoiQuen.TryGetValue(nhom.Id, out var v) && v == o.Id;
+                    <div class="form-check form-check-inline">
+                        <input type="radio" class="form-check-input" name="ThoiQuen[@nhom.Id]" value="@o.Id" id="tq@(o.Id)"
+                               @(daChon ? "checked" : "") />
+                        <label class="form-check-label" for="tq@(o.Id)">@o.Nhan</label>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
+    <button type="submit" class="btn btn-primary">Lưu hồ sơ</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

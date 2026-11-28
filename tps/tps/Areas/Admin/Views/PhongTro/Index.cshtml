@@ -1,0 +1,40 @@
+﻿@model List<tps.Models.Entities.PhongTro>
+@{
+    ViewData["Title"] = "Quản lý tin phòng";
+}
+
+<h2 class="mb-3">Quản lý tin phòng trọ</h2>
+@if (TempData["ThanhCong"] != null)
+{
+    <div class="alert alert-success">@TempData["ThanhCong"]</div>
+}
+@if (TempData["Loi"] != null)
+{
+    <div class="alert alert-danger">@TempData["Loi"]</div>
+}
+
+<form method="get" class="d-flex gap-2 mb-3">
+    <input name="tuKhoa" value="@ViewBag.TuKhoa" class="form-control" placeholder="Tìm theo tên nhà trọ, địa chỉ, chủ trọ..." />
+    <button class="btn btn-primary">Tìm</button>
+</form>
+
+<table class="table table-bordered align-middle">
+    <thead class="table-light"><tr><th>Tên nhà trọ</th><th>Chủ trọ</th><th>Loại</th><th>Giá</th><th>Trạng thái</th><th></th></tr></thead>
+    <tbody>
+        @foreach (var p in Model)
+        {
+            <tr>
+                <td><a asp-area="" asp-controller="TimKiem" asp-action="ChiTiet" asp-route-id="@p.Id">@p.TenNhaTro</a><div class="text-muted small">@p.DiaChi</div></td>
+                <td>@p.ChuTro.HoTen</td>
+                <td>@p.LoaiPhong.Ten</td>
+                <td>@p.GiaThue.ToString("N0") đ</td>
+                <td>@(p.ConPhong ? "Còn phòng" : "Hết phòng")</td>
+                <td>
+                    <form asp-action="Xoa" asp-route-id="@p.Id" method="post" onsubmit="return confirm('Xóa tin này?');">
+                        <button class="btn btn-sm btn-outline-danger">Xóa</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

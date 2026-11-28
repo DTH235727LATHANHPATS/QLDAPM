@@ -1,0 +1,131 @@
+﻿@using System.Globalization
+@model tps.Models.ViewModels.TimKiemViewModel
+@{
+    ViewData["Title"] = "Tìm phòng trọ";
+
+    Dictionary<string, string> Route(int trang)
+    {
+        var d = new Dictionary<string, string>
+        {
+            ["Trang"] = trang.ToString(),
+            ["ChiConPhong"] = Model.ChiConPhong ? "true" : "false",
+            ["TimOGhep"] = Model.TimOGhep ? "true" : "false",
+            ["Sort"] = Model.Sort
+        };
+        if (!string.IsNullOrWhiteSpace(Model.TuKhoa)) d["TuKhoa"] = Model.TuKhoa;
+        if (!string.IsNullOrWhiteSpace(Model.KhuVuc)) d["KhuVuc"] = Model.KhuVuc;
+        if (Model.GiaTu.HasValue) d["GiaTu"] = Model.GiaTu.Value.ToString("0.##", CultureInfo.InvariantCulture);
+        if (Model.GiaDen.HasValue) d["GiaDen"] = Model.GiaDen.Value.ToString("0.##", CultureInfo.InvariantCulture);
+        if (Model.DienTichTu.HasValue) d["DienTichTu"] = Model.DienTichTu.Value.ToString("0.##", CultureInfo.InvariantCulture);
+        if (Model.DienTichDen.HasValue) d["DienTichDen"] = Model.DienTichDen.Value.ToString("0.##", CultureInfo.InvariantCulture);
+        if (Model.LoaiPhongId.HasValue) d["LoaiPhongId"] = Model.LoaiPhongId.Value.ToString();
+        return d;
+    }
+
+    var quangCaos = ViewBag.QuangCaos as List<tps.Models.Entities.QuangCao>;
+}
+
+<h2 class="section-title mb-3">Tìm phòng trọ</h2>
+
+@if (quangCaos != null && quangCaos.Any())
+{
+    <div class="row g-3 mb-4">
+        @foreach (var a in quangCaos)
+        {
+            <div class="col-md-4">
+                <div class="card h-100 border-warning">
+                    @if (!string.IsNullOrEmpty(a.HinhAnh))
+                    {
+                        <img src="@a.HinhAnh" class="card-img-top" style="height:120px;object-fit:cover" alt="@a.TieuDe" />
+                    }
+                    <div class="card-body">
+                        <span class="badge bg-warning text-dark mb-1">Quảng cáo</span>
+                        <h6 class="card-title">@a.TieuDe</h6>
+                        <p class="card-text small">@a.NoiDung</p>
+                        @if (!string.IsNullOrWhiteSpace(a.DuongDan) && (a.DuongDan.StartsWith("http://") || a.DuongDan.StartsWith("https://")))
+                        {
+                            <a href="@a.DuongDan" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-dark">Xem thêm</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+<form method="get" asp-action="Index" class="card card-body mb-4">
+    <div class="row g-2">
+        <div class="col-md-6">
+            <input asp-for="TuKhoa" class="form-control" placeholder="Từ khóa: tên nhà trọ, địa chỉ, mô tả..." />
+        </div>
+        <div class="col-md-3">
+            <select asp-for="LoaiPhongId" asp-items="(SelectList)ViewBag.LoaiPhongs" class="form-select">
+                <option value="">-- Tất cả loại phòng --</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select asp-for="Sort" class="form-select">
+                <option value="moi">Mới nhất</option>
+                <option value="giatang">Giá tăng dần</option>
+                <option value="giagiam">Giá giảm dần</option>
+                <option value="dientich">Diện tích lớn nhất</option>
+            </select>
+        </div>
+
+        <div class="col-md-3"><input asp-for="GiaTu" class="form-control" placeholder="Giá từ (đ)" /></div>
+        <div class="col-md-3"><input asp-for="GiaDen" class="form-control" placeholder="Giá đến (đ)" /></div>
+        <div class="col-md-3"><input asp-for="DienTichTu" class="form-control" placeholder="Diện tích từ (m²)" /></div>
+        <div class="col-md-3"><input asp-for="DienTichDen" class="form-control" placeholder="Diện tích đến (m²)" /></div>
+
+        <div class="col-md-6 d-flex gap-4 align-items-center">
+            <div class="form-check">
+                <input asp-for="ChiConPhong" class="form-check-input" />
+                <label asp-for="ChiConPhong" class="form-check-label">Chỉ phòng còn trống</label>
+            </div>
+            <div class="form-check">
+                <input asp-for="TimOGhep" class="form-check-input" />
+                <label asp-for="TimOGhep" class="form-check-label">Đang tìm người ở ghép</label>
+            </div>
+        </div>
+        <div class="col-md-6 text-end">
+            <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Xóa lọc</a>
+        </div>
+    </div>
+</form>
+
+<p class="text-muted">Tìm thấy <strong>@Model.TongSo</strong> phòng.</p>
+
+@if (!Model.KetQua.Any())
+{
+    <div class="alert alert-info">Không có phòng nào phù hợp.</div>
+}
+else
+{
+    <div class="row g-3">
+        @foreach (var p in Model.KetQua)
+        {
+            <div class="col-lg-6"><partial name="_PhongNgang" model="p" /></div>
+        }
+    </div>
+
+    @if (Model.TongTrang > 1)
+    {
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+                <li class="page-item @(Model.Trang <= 1 ? "disabled" : "")">
+                    <a class="page-link" asp-action="Index" asp-all-route-data="Route(Model.Trang - 1)">«</a>
+                </li>
+                @for (int i = 1; i <= Model.TongTrang; i++)
+                {
+                    <li class="page-item @(i == Model.Trang ? "active" : "")">
+                        <a class="page-link" asp-action="Index" asp-all-route-data="Route(i)">@i</a>
+                    </li>
+                }
+                <li class="page-item @(Model.Trang >= Model.TongTrang ? "disabled" : "")">
+                    <a class="page-link" asp-action="Index" asp-all-route-data="Route(Model.Trang + 1)">»</a>
+                </li>
+            </ul>
+        </nav>
+    }
+}

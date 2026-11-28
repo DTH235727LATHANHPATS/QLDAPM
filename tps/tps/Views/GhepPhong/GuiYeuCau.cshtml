@@ -1,0 +1,23 @@
+﻿@model tps.Models.ViewModels.GuiYeuCauViewModel
+@{
+    ViewData["Title"] = "Gửi yêu cầu ở ghép";
+}
+
+<h2 class="mb-3">Gửi yêu cầu ở ghép</h2>
+<p>Phòng: <strong>@Model.TenPhong</strong></p>
+
+<form asp-action="GuiYeuCau" method="post">
+    <input type="hidden" asp-for="PhongId" />
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="mb-3">
+        <label asp-for="LoiNhan" class="form-label"></label>
+        <textarea asp-for="LoiNhan" class="form-control" rows="4"></textarea>
+        <span asp-validation-for="LoiNhan" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Gửi yêu cầu</button>
+    <a asp-controller="TimKiem" asp-action="ChiTiet" asp-route-id="@Model.PhongId" class="btn btn-secondary">Hủy</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

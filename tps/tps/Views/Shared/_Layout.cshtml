@@ -1,0 +1,175 @@
+﻿@{
+    var ctl = ViewContext.RouteData.Values["controller"]?.ToString();
+    var act = ViewContext.RouteData.Values["action"]?.ToString();
+    var area = ViewContext.RouteData.Values["area"]?.ToString();
+    string Act(bool dk) => dk ? "active" : "";
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Phòng Trọ Sinh Viên</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <header class="site-header">
+        <nav class="navbar navbar-expand-lg bg-white">
+            <div class="container-xl">
+                <a class="brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <i class="bi bi-house-door-fill brand-icon"></i>
+                    <span>
+                        <span class="brand-name">Phòng Trọ Sinh Viên</span>
+                        <span class="brand-slogan">Trọ dễ dàng - An tâm học tập!</span>
+                    </span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu"
+                        aria-controls="menu" aria-expanded="false" aria-label="Menu">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="menu">
+                    <ul class="navbar-nav mx-auto main-nav">
+                        <li class="nav-item">
+                            <a class="nav-link @Act(ctl == "Home" && act == "Index" && area == null)" asp-area="" asp-controller="Home" asp-action="Index">
+                                <i class="bi bi-house-door-fill"></i> Trang chủ
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @Act(ctl == "TimKiem")" asp-area="" asp-controller="TimKiem" asp-action="Index">
+                                <i class="bi bi-search"></i> Tìm phòng
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @Act(ctl == "SoSanh")" asp-area="" asp-controller="SoSanh" asp-action="Index">
+                                <i class="bi bi-columns-gap"></i> So sánh
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            @if (User.IsInRole("ChuTro"))
+                            {
+                                <a class="nav-link @Act(ctl == "PhongTro")" asp-area="" asp-controller="PhongTro" asp-action="Create"><i class="bi bi-pencil-fill"></i> Đăng tin cho thuê</a>
+                            }
+                            else
+                            {
+                                <a class="nav-link" asp-area="" asp-controller="TaiKhoan" asp-action="DangKy"><i class="bi bi-pencil-fill"></i> Đăng tin cho thuê</a>
+                            }
+                        </li>
+                    </ul>
+
+                    <div class="d-flex align-items-center gap-2">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <div class="dropdown">
+                                <button class="btn btn-outline-primary btn-auth dropdown-toggle" data-bs-toggle="dropdown">
+                                    <i class="bi bi-person-fill"></i> @User.Identity.Name
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    @if (User.IsInRole("SinhVien") || User.IsInRole("ChuTro"))
+                                    {
+                                        <li><a class="dropdown-item" asp-area="" asp-controller="HoSo" asp-action="Index">Hồ sơ của tôi</a></li>
+                                    }
+                                    @if (User.IsInRole("ChuTro"))
+                                    {
+                                        <li><a class="dropdown-item" asp-area="" asp-controller="PhongTro" asp-action="Index">Phòng trọ của tôi</a></li>
+                                        <li><a class="dropdown-item" asp-area="" asp-controller="GhepPhong" asp-action="NhanDuoc">Yêu cầu ở ghép</a></li>
+                                    }
+                                    @if (User.IsInRole("SinhVien"))
+                                    {
+                                        <li><a class="dropdown-item" asp-area="" asp-controller="GhepPhong" asp-action="GoiY">Gợi ý ở ghép</a></li>
+                                        <li><a class="dropdown-item" asp-area="" asp-controller="GhepPhong" asp-action="CuaToi">Yêu cầu của tôi</a></li>
+                                    }
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <li><a class="dropdown-item" asp-area="Admin" asp-controller="Home" asp-action="Index">Trang quản trị</a></li>
+                                    }
+                                    <li><hr class="dropdown-divider" /></li>
+                                    <li>
+                                        <form asp-area="" asp-controller="TaiKhoan" asp-action="DangXuat" method="post">
+                                            <button type="submit" class="dropdown-item">Đăng xuất</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                        }
+                        else
+                        {
+                            <a class="btn btn-outline-primary btn-auth" asp-area="" asp-controller="TaiKhoan" asp-action="DangNhap"><i class="bi bi-person-fill"></i> Đăng nhập</a>
+                            <a class="btn btn-primary btn-auth" asp-area="" asp-controller="TaiKhoan" asp-action="DangKy"><i class="bi bi-person-plus-fill"></i> Đăng ký</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    @* Thông báo khi thêm phòng vào so sánh (trừ ngay trang So sánh) *@
+    @if (TempData["ThongBaoSoSanh"] != null && ctl != "SoSanh")
+    {
+        <div class="container-xl pt-3">
+            <div class="alert alert-info alert-dismissible fade show mb-0">
+                @TempData["ThongBaoSoSanh"]
+                <a asp-area="" asp-controller="SoSanh" asp-action="Index" class="alert-link ms-2">Xem so sánh »</a>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        </div>
+    }
+
+    <main>
+        @if (ctl == "Home" && act == "Index" && area == null)
+        {
+            @RenderBody()
+        }
+        else
+        {
+            <div class="container-xl py-4">@RenderBody()</div>
+        }
+    </main>
+
+    <footer class="site-footer">
+        <div class="container-xl">
+            <div class="row gy-4">
+                <div class="col-lg-4">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-house-door-fill brand-icon text-white"></i>
+                        <div>
+                            <div class="fw-bold fs-5">Phòng Trọ Sinh Viên</div>
+                            <div class="small opacity-75">Kết nối người thuê và chủ trọ</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-6">
+                    <div class="fw-semibold mb-2">Liên kết nhanh</div>
+                    <ul class="list-unstyled small mb-0">
+                        <li><a asp-area="" asp-controller="Home" asp-action="Index">Trang chủ</a></li>
+                        <li><a asp-area="" asp-controller="TimKiem" asp-action="Index">Tìm phòng</a></li>
+                        <li><a asp-area="" asp-controller="SoSanh" asp-action="Index">So sánh phòng</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-6">
+                    <div class="fw-semibold mb-2">Liên hệ</div>
+                    <ul class="list-unstyled small mb-0">
+                        <li><i class="bi bi-telephone-fill"></i> 0987 654 321</li>
+                        <li><i class="bi bi-envelope-fill"></i> phongtro@sv.vn</li>
+                        <li><i class="bi bi-geo-alt-fill"></i> Long Xuyên, An Giang</li>
+                    </ul>
+                </div>
+                <div class="col-lg-2">
+                    <div class="fw-semibold mb-2">Theo dõi chúng tôi</div>
+                    <div class="d-flex gap-2 fs-4">
+                        <i class="bi bi-facebook"></i><i class="bi bi-youtube"></i><i class="bi bi-chat-dots-fill"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center small opacity-75 mt-3">&copy; 2026 Phòng Trọ Sinh Viên by TPS. All rights reserved.</div>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

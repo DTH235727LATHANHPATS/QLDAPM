@@ -1,0 +1,63 @@
+﻿@model List<tps.Models.Entities.YeuCauOGhep>
+@{
+    ViewData["Title"] = "Yêu cầu ở ghép của tôi";
+}
+
+<h2 class="mb-3">Yêu cầu ở ghép của tôi</h2>
+@if (TempData["ThanhCong"] != null)
+{
+    <div class="alert alert-success">@TempData["ThanhCong"]</div>
+}
+@if (TempData["Loi"] != null)
+{
+    <div class="alert alert-danger">@TempData["Loi"]</div>
+}
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Bạn chưa gửi yêu cầu nào.</div>
+}
+else
+{
+    <table class="table table-bordered align-middle">
+        <thead class="table-light"><tr><th>Phòng</th><th>Lời nhắn</th><th>Ngày gửi</th><th>Trạng thái</th><th></th></tr></thead>
+        <tbody>
+            @foreach (var y in Model)
+            {
+                <tr>
+                    <td><a asp-controller="TimKiem" asp-action="ChiTiet" asp-route-id="@y.PhongId">@y.Phong.TenNhaTro</a></td>
+                    <td>@y.LoiNhan</td>
+                    <td>@y.NgayTao.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>
+                        @switch (y.TrangThai)
+                        {
+                            case 0:
+                                <span class="badge bg-warning text-dark">Chờ duyệt</span>
+                                break;
+                            case 1:
+
+                                <span class="badge bg-success">Đã chấp nhận</span>
+                                break;
+                            case 2:
+
+                                <span class="badge bg-danger">Bị từ chối</span>
+                                break;
+                            default:
+
+                                <span class="badge bg-secondary">Đã hủy</span>
+                                break;
+                        }
+                    </td>
+                    <td>
+                        @if (y.TrangThai == 0)
+                        {
+                            <form asp-action="Huy" asp-route-id="@y.Id" method="post" onsubmit="return confirm('Hủy yêu cầu này?');">
+                                <button class="btn btn-sm btn-outline-danger">Hủy</button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
